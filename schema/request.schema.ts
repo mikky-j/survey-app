@@ -29,7 +29,6 @@ export interface QuestionRequest {
 export interface CreateSurveyRequest {
   title: string;
   description: string;
-  user_id: number;
   questions: QuestionRequest[];
 }
 
