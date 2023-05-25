@@ -7,8 +7,10 @@ import {
   successResponse,
   validateJWT,
   unauthorizedResponse,
+  notFoundResponse,
 } from "../../globals";
 import { SurveyResponse } from "@/schema/response.schema";
+import { notFound } from "next/navigation";
 
 export const POST = async (req: Request) => {
   const data = (await req.json()) as CreateSurveyRequest;
@@ -64,7 +66,13 @@ export const POST = async (req: Request) => {
       });
     }
 
-    return successResponse<SurveyResponse>(generateSurveyResponse(survey));
+    const finalSurvey = await prisma.survey.findUnique({
+      where: { id: survey.id },
+      include: { questions: { include: { options: true } } },
+    });
+    if (!finalSurvey) return notFoundResponse("Couldn't find the response");
+
+    return successResponse<SurveyResponse>(generateSurveyResponse(finalSurvey));
   } catch (error) {
     console.error(error);
     return errorResponse("Error Creating the survey");

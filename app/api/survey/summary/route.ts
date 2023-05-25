@@ -8,10 +8,10 @@ import {
 import { prisma } from "@/app/api/prisma";
 import { ResponseSummaryResponse } from "@/schema/response.schema";
 
-export const GET = async (
-  req: Request,
-  { params: { id } }: { params: { id: string } }
-) => {
+export const GET = async (req: Request) => {
+  const { searchParams } = new URL(req.url);
+  const id = searchParams.get("id");
+
   const token = req.headers.get("Authorization");
   const payload = await validateJWT(token);
   if (!payload) {

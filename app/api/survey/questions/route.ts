@@ -6,10 +6,7 @@ import {
 import { prisma } from "@/app/api/prisma";
 import { UpdateQuestionRequest } from "@/schema/request.schema";
 
-export const POST = async (
-  req: Request,
-  { params: { id: surveyId } }: { params: { id: string; questionId: string } }
-) => {
+export const POST = async (req: Request) => {
   const data = (await req.json()) as UpdateQuestionRequest;
   const question = await prisma.question.findUnique({
     where: {

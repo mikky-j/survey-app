@@ -4,14 +4,14 @@ import {
   generateSurveyResponse,
   notFoundResponse,
   successResponse,
-} from "../../globals";
-import { prisma } from "../../prisma";
+} from "@/app/api/globals";
+import { prisma } from "@/app/api/prisma";
 import { AnswerRequest, ResponseRequest } from "@/schema/request.schema";
 
-export const GET = async (
-  _req: Request,
-  { params: { id } }: { params: { id: string } }
-) => {
+export const GET = async (req: Request) => {
+  const { searchParams } = new URL(req.url);
+  const id = searchParams.get("id");
+
   const survey = await prisma.survey.findUnique({
     where: {
       id: Number(id),
@@ -32,14 +32,13 @@ export const GET = async (
   return successResponse<SurveyResponse>(generateSurveyResponse(survey));
 };
 
-export const POST = async (
-  req: Request,
-  { params: { id } }: { params: { id: string } }
-) => {
+export const POST = async (req: Request) => {
+  const { searchParams } = new URL(req.url);
+  const id = searchParams.get("id");
+
   const data = (await req.json()) as ResponseRequest;
   const response = await prisma.response.create({
     data: {
-      user: { connect: { id: data.userId } },
       survey: { connect: { id: Number(id) } },
       answers: {
         createMany: {
