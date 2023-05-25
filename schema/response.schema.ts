@@ -25,7 +25,6 @@ export interface AnswerResponse {
 
 export interface ResponseResponse {
   surveyId: number;
-  userId?: number | null;
   userEmail?: string;
   answers: AnswerResponse[];
 }
@@ -33,4 +32,9 @@ export interface ResponseResponse {
 export interface ResponseSummaryResponse {
   responseCount: number;
   responses: ResponseResponse[];
+}
+
+export interface UserSurveysResponse {
+  surveyCount: number;
+  surveys: SurveyResponse[];
 }

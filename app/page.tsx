@@ -7,7 +7,7 @@ import Appbar from "./components/appbar";
 import { Container } from "./components/container";
 import ActionCard from "./components/action_card";
 import { FaPlus, FaChartBar } from "react-icons/fa";
-import { useUser } from "./hooks/user_hook";
+import { useUser } from "./hooks/hook";
 
 const Home = () => {
   const user = useUser();
@@ -31,7 +31,7 @@ const Home = () => {
           <ActionCard
             Icon={FaChartBar}
             text="Manage surveys"
-            redirect="/survey/create"
+            redirect="/survey/manage"
           />
         </div>
       </Container>

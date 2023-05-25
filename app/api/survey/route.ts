@@ -46,9 +46,7 @@ export const POST = async (req: Request) => {
             return {
               questionId: answer.questionId,
               content: answer.content,
-              option: answer.optionId
-                ? { connect: { id: answer.optionId } }
-                : undefined,
+              optionId: answer.optionId,
             };
           }),
         },

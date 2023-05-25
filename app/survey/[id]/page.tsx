@@ -1,10 +1,15 @@
 "use client";
 import Appbar from "@/app/components/appbar";
 import { Container } from "@/app/components/container";
-import { ResponseRequest } from "@/schema/request.schema";
-import { ResponseResponse, SurveyResponse } from "@/schema/response.schema";
+import { AnswerRequest, ResponseRequest } from "@/schema/request.schema";
+import {
+  AnswerResponse,
+  ResponseResponse,
+  SurveyResponse,
+} from "@/schema/response.schema";
 import axios, { AxiosResponse } from "axios";
 import { useFormik } from "formik";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 const getData = async (id: string) => {
@@ -18,6 +23,7 @@ const getData = async (id: string) => {
 
 const AnswerPage = ({ params: { id } }: { params: { id: string } }) => {
   const [survey, setSurvey] = useState<SurveyResponse>();
+  const [done, setDone] = useState<boolean>();
   const [response, setResponse] = useState<ResponseRequest>({
     surveyId: Number(id),
     answers: [],
@@ -33,8 +39,9 @@ const AnswerPage = ({ params: { id } }: { params: { id: string } }) => {
         ResponseResponse,
         AxiosResponse<ResponseResponse, any>,
         ResponseRequest
-      >("/api/survey", response);
-      return data;
+      >(`/api/survey?id=${id}`, values);
+      if (data.status == 200) setDone(true);
+      else setDone(false);
     },
   });
 
@@ -45,9 +52,11 @@ const AnswerPage = ({ params: { id } }: { params: { id: string } }) => {
   }, []);
 
   useEffect(() => {
-    const answers = survey?.questions.map((question) => {
+    const answers = survey?.questions.map<AnswerRequest>((question) => {
       return {
         questionId: question.id,
+        content: null,
+        optionId: null,
       };
     });
 
@@ -69,6 +78,17 @@ const AnswerPage = ({ params: { id } }: { params: { id: string } }) => {
       <Container>
         <p className="mt-10 mb-4 text-xl">{survey.title}</p>
         <p className="text-lg">{survey.description}</p>
+        {done !== null ? (
+          done ? (
+            <p className="p-2 my-4 bg-green-300 text-green-500 rounded-md">
+              Sumbitted successfully <Link href="/">Go back to main page</Link>
+            </p>
+          ) : (
+            <p className="p-2 my-4 bg-red-300 text-red-500 rounded-md">
+              An Error occured. Please try again
+            </p>
+          )
+        ) : null}
         <form onSubmit={formik.handleSubmit}>
           {survey.questions.map((question, index) => {
             return (

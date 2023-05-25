@@ -43,8 +43,8 @@ export interface UpdateSurveyRequest {
 
 export interface AnswerRequest {
   questionId: number;
-  optionId?: number;
-  content?: string;
+  optionId?: number | null;
+  content?: string | null;
 }
 
 export interface ResponseRequest {

@@ -126,7 +126,6 @@ export const generateResponseResponse = (
 ): ResponseResponse => {
   return {
     surveyId: response.surveyId,
-    userId: response.userId,
     userEmail: response.user?.email,
     answers: response.answers.map((answer) => {
       const { id, option, content, question } = answer;

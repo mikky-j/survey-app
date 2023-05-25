@@ -1,6 +1,6 @@
 "use client";
 import Appbar from "@/app/components/appbar";
-import { useUser } from "@/app/hooks/user_hook";
+import { useUser } from "@/app/hooks/hook";
 import QuestionInput from "./question_input";
 import { Container } from "@/app/components/container";
 import { useFormik } from "formik";
