@@ -1,12 +1,7 @@
 # Steps to set up the database
 
 1. Download and install postgresql
-2. Open your terminal and run the following command
-
-```bash
-psql -U postgres
-```
-
+2. Search the SqlShell(psql) on your apps
 3. Enter your password
 4. Run the following command
 
