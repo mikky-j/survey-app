@@ -16,7 +16,7 @@ DATABASE_URL="postgresql://postgres:<your-password>@localhost:5432/survey?schema
 NEXT_PUBLIC_JWT_SECRET="<Your-secret>"
 ```
 
-# Steps to set up project[Nde]
+# Steps to set up project[Node]
 
 1. Download NodeJs on Windows
 2. Navigate to the folder where code is

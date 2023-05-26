@@ -1,6 +1,6 @@
 "use client";
 import Appbar from "@/app/components/appbar";
-import { useUser } from "@/app/hooks/hook";
+import { useUser } from "@/app/hook";
 import QuestionInput from "./question_input";
 import { Container } from "@/app/components/container";
 import { useFormik } from "formik";
@@ -9,6 +9,8 @@ import axios, { AxiosResponse } from "axios";
 import { SurveyResponse } from "@/schema/response.schema";
 import { useEffect, useState } from "react";
 import { FaMinus, FaPlus } from "react-icons/fa";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 const getDefaultQuestion = (): QuestionRequest => {
   return {
@@ -22,6 +24,8 @@ const getDefaultQuestion = (): QuestionRequest => {
 
 export const SurveyCreatePage = () => {
   const user = useUser();
+  const router = useRouter();
+  const [done, setDone] = useState<boolean>();
   const [questions, setQuestions] = useState<QuestionRequest[]>([
     {
       content: "",
@@ -44,7 +48,11 @@ export const SurveyCreatePage = () => {
         AxiosResponse<SurveyResponse, any>,
         CreateSurveyRequest
       >("/api/survey/create", values);
-      console.log(response);
+      if (response.status == 200) {
+        router.push(`/survey/${response.data.id}`);
+      } else {
+        setDone(false);
+      }
     },
   });
   useEffect(() => {

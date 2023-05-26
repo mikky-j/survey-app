@@ -2,7 +2,9 @@ import { UserPayload } from "@/schema/payload.schema";
 import {
   QuestionResponse,
   ResponseResponse,
+  ResponseSummaryResponse,
   SurveyResponse,
+  UserSurveysResponse,
 } from "@/schema/response.schema";
 import { Prisma, PrismaClient } from "@prisma/client";
 import { JWTPayload, jwtVerify, SignJWT } from "jose";
@@ -68,7 +70,9 @@ export const validateJWT = async (
   token: string | undefined | null
 ): Promise<(JWTPayload & { id?: number; email?: string }) | null> => {
   if (!token) return null;
-  const { payload, protectedHeader } = await jwtVerify(token, JWT_SECRET);
+  const { payload, protectedHeader } = await jwtVerify(token, JWT_SECRET, {
+    algorithms: ["HS256"],
+  });
   return payload;
 };
 
@@ -115,6 +119,50 @@ export const generateQuestionResponse = (
   };
 };
 
+export const generateSurveySummary = (
+  surveys: Prisma.SurveyGetPayload<{
+    include: { responses: true; questions: true };
+  }>[]
+): UserSurveysResponse => {
+  return {
+    surveyCount: surveys.length,
+    surveys: surveys.map((survey) => {
+      return {
+        responseCount: survey.responses.length,
+        surveyDescription: survey.description,
+        surveyId: survey.id,
+        surveyTitle: survey.title,
+      };
+    }),
+  };
+};
+
+export const generateResponseSummaryResponse = (
+  responses: Prisma.ResponseGetPayload<{
+    include: { answers: { include: { question: true; option: true } } };
+  }>[]
+): ResponseSummaryResponse => {
+  return {
+    responseCount: responses.length,
+    responses: responses.map((response) => {
+      return {
+        answers: response.answers.map((answer) => {
+          return {
+            questionId: answer.questionId,
+            questionContent: answer.question.content,
+            questionType: answer.question.type,
+            answerId: answer.id,
+            answerValue:
+              answer.question.type == "TEXT"
+                ? answer.content!
+                : answer.option?.content!,
+          };
+        }),
+      };
+    }),
+  };
+};
+
 export const generateResponseResponse = (
   response: Prisma.ResponseGetPayload<{
     include: {
@@ -126,12 +174,12 @@ export const generateResponseResponse = (
 ): ResponseResponse => {
   return {
     surveyId: response.surveyId,
-    userEmail: response.user?.email,
     answers: response.answers.map((answer) => {
       const { id, option, content, question } = answer;
       return {
         answerId: id,
         answerValue: question.type == "TEXT" ? content! : option?.content!,
+        questionType: question.type,
         questionContent: question.content,
         questionId: question.id,
       };

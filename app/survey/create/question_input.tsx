@@ -82,17 +82,35 @@ const QuestionInput = ({
               content: e.target.value,
             });
           }}
-          className="w-4/5 p-2  border-b outline-none focus:border-b-blue-500 "
+          className="flex-grow p-2  border-b outline-none focus:border-b-blue-500 "
         />
         <select
-          className="w-1/5"
+          className="min-w-fit"
           defaultValue={currentType}
           onChange={handleTypeChange}
         >
-          {types.map((type) => {
-            return <option value={type}>{type}</option>;
+          {types.map((type, index) => {
+            return (
+              <option key={index} value={type}>
+                {type}
+              </option>
+            );
           })}
         </select>
+        <div className="ms-2">
+          <input
+            type="checkbox"
+            checked={question.required}
+            onChange={(e) =>
+              setQuestion({
+                ...question,
+                required: e.target.checked,
+              })
+            }
+            name="required"
+          />{" "}
+          Required
+        </div>
       </div>
       <div>
         {options.map((option, index) => {

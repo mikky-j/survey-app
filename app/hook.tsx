@@ -34,7 +34,7 @@ export const useUser = () => {
   return user;
 };
 
-export const useSurveySummary = (id: string) => {
+export const useSurveySummary = () => {
   const [survey, setSurvey] = useState<UserSurveysResponse>();
   useEffect(() => {
     getSurveySummary()
@@ -42,4 +42,18 @@ export const useSurveySummary = (id: string) => {
       .catch(console.error);
   }, []);
   return survey;
+};
+
+export const useFetcher = <T,>(
+  url: string
+): [T | undefined, string | undefined] => {
+  const [data, setData] = useState<T>();
+  const [error, setError] = useState<string>();
+  useEffect(() => {
+    axios
+      .get<T>(url)
+      .then(({ data }) => setData(data))
+      .catch((err) => setError(err.message));
+  }, []);
+  return [data, error];
 };

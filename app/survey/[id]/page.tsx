@@ -23,7 +23,7 @@ const getData = async (id: string) => {
 
 const AnswerPage = ({ params: { id } }: { params: { id: string } }) => {
   const [survey, setSurvey] = useState<SurveyResponse>();
-  const [done, setDone] = useState<boolean>();
+  const [done, setDone] = useState<boolean | null>(null);
   const [response, setResponse] = useState<ResponseRequest>({
     surveyId: Number(id),
     answers: [],
@@ -35,6 +35,7 @@ const AnswerPage = ({ params: { id } }: { params: { id: string } }) => {
       answers: [],
     },
     onSubmit: async (values) => {
+      console.log(values);
       const data = await axios.post<
         ResponseResponse,
         AxiosResponse<ResponseResponse, any>,
@@ -59,6 +60,7 @@ const AnswerPage = ({ params: { id } }: { params: { id: string } }) => {
         optionId: null,
       };
     });
+    console.log(answers);
 
     setResponse({
       ...response,
@@ -67,6 +69,7 @@ const AnswerPage = ({ params: { id } }: { params: { id: string } }) => {
   }, [survey]);
 
   useEffect(() => {
+    console.log(response);
     formik.setFieldValue("answers", response.answers);
   }, [response]);
 
@@ -105,18 +108,21 @@ const AnswerPage = ({ params: { id } }: { params: { id: string } }) => {
                         answers: [...response.answers],
                       });
                     }}
+                    required={question.required}
                     className="w-full outline-none border-b focus:border-b-blue-500"
                   />
                 ) : (
-                  question.options.map((option, index) => {
+                  question.options.map((option, optionIndex) => {
                     return (
-                      <div key={index}>
+                      <div key={optionIndex}>
                         <input
                           type={
                             question.type === "CHECKBOX" ? "checkbox" : "radio"
                           }
+                          name={`${question.id}`}
                           onChange={() => {
                             response.answers[index].optionId = option.id;
+                            console.log("answers", response.answers);
                             setResponse({
                               ...response,
                               answers: [...response.answers],

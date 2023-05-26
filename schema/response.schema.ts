@@ -1,3 +1,4 @@
+import { QuestionType } from "@prisma/client";
 import { CreateSurveyRequest, QuestionRequest } from "./request.schema";
 
 export interface UserResponse {
@@ -20,21 +21,28 @@ export interface AnswerResponse {
   questionId: number;
   questionContent: string;
   answerId: number;
+  questionType: QuestionType;
   answerValue: string;
 }
 
 export interface ResponseResponse {
   surveyId: number;
-  userEmail?: string;
   answers: AnswerResponse[];
 }
 
 export interface ResponseSummaryResponse {
   responseCount: number;
-  responses: ResponseResponse[];
+  responses: Omit<ResponseResponse, "surveyId">[];
+}
+
+export interface SurveySummaryResponse {
+  surveyId: number;
+  surveyTitle: string;
+  surveyDescription: string;
+  responseCount: number;
 }
 
 export interface UserSurveysResponse {
   surveyCount: number;
-  surveys: SurveyResponse[];
+  surveys: SurveySummaryResponse[];
 }

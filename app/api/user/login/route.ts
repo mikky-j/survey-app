@@ -17,40 +17,32 @@ export async function POST(req: Request): Promise<Response> {
     },
   });
   if (!user) {
+    console.log("Couldn't find the user");
     return errorResponse("Email or password is incorrect");
   }
 
-  let isValidPassword = false;
-  let error = "";
-
-  bcrypt.compare(data.password, user.password, (err, result) => {
-    if (err) {
-      console.error(err.message);
-      error = err.message;
-      return;
+  try {
+    const isValidPassword = await bcrypt.compare(data.password, user.password);
+    if (!isValidPassword) {
+      console.log("Incorrect Password");
+      return errorResponse("Email or password is incorrect");
     }
-    isValidPassword = result;
-  });
 
-  if (error != "") {
-    return serverError(error);
+    const token = await generateJWT({ id: user.id, email: user.email });
+
+    return successResponse<UserResponse>(
+      {
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        token,
+      },
+      {
+        "Set-Cookie": `token=${token}; path=/; HttpOnly; SameSite=Strict; Max-Age=2592000;`,
+      }
+    );
+  } catch (error) {
+    console.error(error);
+    return serverError("Error occured when trying to login");
   }
-
-  if (!isValidPassword) {
-    return errorResponse("Email or password is incorrect");
-  }
-
-  const token = await generateJWT({ id: user.id, email: user.email });
-
-  return successResponse<UserResponse>(
-    {
-      email: user.email,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      token,
-    },
-    {
-      "Set-Cookie": `token=${token}; path=/; HttpOnly; SameSite=Strict; Max-Age=2592000;`,
-    }
-  );
 }

@@ -1,6 +1,7 @@
 import { UserSurveysResponse } from "@/schema/response.schema";
 import {
   generateSurveyResponse,
+  generateSurveySummary,
   successResponse,
   unauthorizedResponse,
   validateJWT,
@@ -22,11 +23,9 @@ export const GET = async (req: Request) => {
           order: "asc",
         },
       },
+      responses: true,
     },
   });
 
-  return successResponse<UserSurveysResponse>({
-    surveyCount: data.length,
-    surveys: data.map((data) => generateSurveyResponse(data)),
-  });
+  return successResponse<UserSurveysResponse>(generateSurveySummary(data));
 };

@@ -14,12 +14,8 @@ import { prisma } from "../../prisma";
 export async function POST(req: Request) {
   const data = (await req.json()) as Omit<CreateUserRequest, "confirmPassword">;
 
-  bcrypt.hash(data.password, 10, (err, hash) => {
-    if (err) {
-      console.error(err.message);
-    }
-    data.password = hash;
-  });
+  const hash = await bcrypt.hash(data.password, 10);
+  data.password = hash;
 
   try {
     await prisma.user.create({
@@ -27,7 +23,7 @@ export async function POST(req: Request) {
     });
   } catch (error: any) {
     console.error(error.message);
-    return serverErrorResponse(error.message);
+    return serverErrorResponse("Email Already taken");
   }
 
   const user = await prisma.user.findUnique({

@@ -5,9 +5,13 @@ import axios from "axios";
 import { useFormik } from "formik";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+
+type error = { response: { data: string } };
 
 const Test = () => {
   const router = useRouter();
+  const [errorMessage, setErrorMessage] = useState<string>();
   const formik = useFormik<CreateUserRequest>({
     initialValues: {
       email: "",
@@ -17,17 +21,22 @@ const Test = () => {
       confirmPassword: "",
     },
     onSubmit: async (values) => {
-      const data = await axios.post<
-        Omit<CreateUserRequest, "confirmPassword">,
-        UserResponse
-      >("http://localhost:3000/api/user/create", {
-        email: values.email,
-        password: values.password,
-        firstName: values.firstName,
-        lastName: values.lastName,
-      });
-      console.log("Created User Successfully", data);
-      router.push("/");
+      try {
+        const data = await axios.post<
+          Omit<CreateUserRequest, "confirmPassword">,
+          UserResponse
+        >("http://localhost:3000/api/user/create", {
+          email: values.email,
+          password: values.password,
+          firstName: values.firstName,
+          lastName: values.lastName,
+        });
+        console.log("Created User Successfully", data);
+        router.push("/");
+        setErrorMessage(undefined);
+      } catch (error) {
+        setErrorMessage((error as error).response.data as string);
+      }
     },
   });
 
@@ -38,6 +47,9 @@ const Test = () => {
         className="p-3 rounded-md shadow-md w-1/3 bg-white"
       >
         <p className="text-center text-lg">Sign Up</p>
+        {errorMessage ? (
+          <p className="p-2 bg-red-300 my-4 text-red-500">{errorMessage}</p>
+        ) : null}
         <div>
           <p>First Name</p>
           <input
@@ -96,7 +108,7 @@ const Test = () => {
         <input
           type="submit"
           className="bg-blue-500 w-full p-2 text-white rounded-md"
-          value="Submit"
+          value="Sign Up"
         />
         <p className="text-center my-3">
           Already a member?{" "}

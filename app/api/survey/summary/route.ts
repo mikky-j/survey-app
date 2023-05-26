@@ -1,6 +1,7 @@
 import {
   errorResponse,
   generateResponseResponse,
+  generateResponseSummaryResponse,
   successResponse,
   unauthorizedResponse,
   validateJWT,
@@ -12,27 +13,22 @@ export const GET = async (req: Request) => {
   const { searchParams } = new URL(req.url);
   const id = searchParams.get("id");
 
-  const token = req.headers.get("Authorization");
+  const token = req.headers.get("cookie")?.split("=")[1];
   const payload = await validateJWT(token);
+
   if (!payload) {
     return unauthorizedResponse("Invalid token");
   }
   const responses = await prisma.response.findMany({
     where: {
       surveyId: Number(id),
-      userId: payload.id,
     },
     include: {
-      user: true,
-      survey: true,
       answers: { include: { option: true, question: true } },
     },
   });
 
-  return successResponse<ResponseSummaryResponse>({
-    responseCount: responses.length,
-    responses: responses.map((response) => {
-      return generateResponseResponse(response);
-    }),
-  });
+  return successResponse<ResponseSummaryResponse>(
+    generateResponseSummaryResponse(responses)
+  );
 };

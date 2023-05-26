@@ -1,40 +1,25 @@
 "use client";
-import { UserResponse } from "@/schema/response.schema";
-import axios, { AxiosResponse } from "axios";
-import { useRouter } from "next/navigation";
-import { use, useEffect, useState } from "react";
-import Appbar from "./components/appbar";
+import Link from "next/link";
 import { Container } from "./components/container";
-import ActionCard from "./components/action_card";
-import { FaPlus, FaChartBar } from "react-icons/fa";
-import { useUser } from "./hooks/hook";
 
 const Home = () => {
-  const user = useUser();
-
-  if (!user) return <p>Loading...</p>;
-
   return (
-    <div className="w-screen">
-      <Appbar />
-      <Container>
-        <p className="mt-10 text-2xl">
-          Hello {user.firstName}, What would you like to do today
-        </p>
-
-        <div className="w-full flex justify-evenly mt-10 items-center">
-          <ActionCard
-            Icon={FaPlus}
-            text="Create a survey"
-            redirect="/survey/create"
-          />
-          <ActionCard
-            Icon={FaChartBar}
-            text="Manage surveys"
-            redirect="/survey/manage"
-          />
-        </div>
-      </Container>
+    <div className="bg-[url('https://picsum.photos/2000')] w-screen h-screen bg-cover">
+      <div className="w-full h-full bg-black/50 flex items-center justify-center text-white">
+        <Container className="flex items-center flex-col">
+          <p className="text-5xl font-semibold my-2">Survey App</p>
+          <p className="w-1/2 text-center my-2">
+            We believe that every voice deserves to be heard and that your
+            opinions have the power to drive meaningful change.
+          </p>
+          <Link
+            href={"/signup"}
+            className="my-3 bg-white text-black p-3 rounded-md"
+          >
+            Get Started
+          </Link>
+        </Container>
+      </div>
     </div>
   );
 };

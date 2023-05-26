@@ -6,16 +6,20 @@ export const middleware = async (request: NextRequest) => {
   const token = request.cookies.get("token");
   const isAuthenticated = await validateJWT(token?.value);
   // const isAuthenticated = true;
+  console.log(request.url);
+  console.log(request.url.split("/")[3] == "");
   if (
     (request.url.includes("/signup") || request.url.includes("/login")) &&
     !isAuthenticated
   ) {
     return NextResponse.next();
   } else if (
-    (request.url.includes("/signup") || request.url.includes("/login")) &&
+    (request.url.includes("/signup") ||
+      request.url.includes("/login") ||
+      request.url.split("/")[3] == "") &&
     isAuthenticated
   ) {
-    return NextResponse.redirect(new URL("/", request.url));
+    return NextResponse.redirect(new URL("/dashboard", request.url));
   } else if (
     !isAuthenticated &&
     !request.url.includes("/signup") &&
@@ -29,5 +33,12 @@ export const middleware = async (request: NextRequest) => {
 };
 
 export const config = {
-  matcher: ["/", "/signup", "/login", "/survey/create", "/survey/manage"],
+  matcher: [
+    "/",
+    "/dashboard",
+    "/signup",
+    "/login",
+    "/survey/create",
+    "/survey/manage",
+  ],
 };
