@@ -34,8 +34,6 @@ export const POST = async (req: Request) => {
     },
   });
 
-  console.log(`Deleted ${deleted.count} options from Question ${question.id}`);
-
   const updatedQuestion = await prisma.question.update({
     data: {
       content: data.content,
@@ -77,5 +75,4 @@ export const DELETE = async (req: Request) => {
       survey: true,
     },
   });
-  console.log(deleted.content, ":", deleted.survey.title);
 };

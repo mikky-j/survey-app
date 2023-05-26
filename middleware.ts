@@ -6,8 +6,6 @@ export const middleware = async (request: NextRequest) => {
   const token = request.cookies.get("token");
   const isAuthenticated = await validateJWT(token?.value);
   // const isAuthenticated = true;
-  console.log(request.url);
-  console.log(request.url.split("/")[3] == "");
   if (
     (request.url.includes("/signup") || request.url.includes("/login")) &&
     !isAuthenticated
@@ -40,5 +38,6 @@ export const config = {
     "/login",
     "/survey/create",
     "/survey/manage",
+    "/survey/manage/:path*",
   ],
 };

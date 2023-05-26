@@ -35,7 +35,6 @@ const AnswerPage = ({ params: { id } }: { params: { id: string } }) => {
       answers: [],
     },
     onSubmit: async (values) => {
-      console.log(values);
       const data = await axios.post<
         ResponseResponse,
         AxiosResponse<ResponseResponse, any>,
@@ -60,7 +59,6 @@ const AnswerPage = ({ params: { id } }: { params: { id: string } }) => {
         optionId: null,
       };
     });
-    console.log(answers);
 
     setResponse({
       ...response,
@@ -69,7 +67,6 @@ const AnswerPage = ({ params: { id } }: { params: { id: string } }) => {
   }, [survey]);
 
   useEffect(() => {
-    console.log(response);
     formik.setFieldValue("answers", response.answers);
   }, [response]);
 
@@ -122,7 +119,7 @@ const AnswerPage = ({ params: { id } }: { params: { id: string } }) => {
                           name={`${question.id}`}
                           onChange={() => {
                             response.answers[index].optionId = option.id;
-                            console.log("answers", response.answers);
+
                             setResponse({
                               ...response,
                               answers: [...response.answers],

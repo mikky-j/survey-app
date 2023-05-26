@@ -72,9 +72,7 @@ export const ManageSurveyPage = ({
     return null;
   }, [responses]);
 
-  useEffect(() => {
-    console.log(responses);
-  }, [responses]);
+  useEffect(() => {}, [responses]);
 
   if (!responses) return <p>Loading..</p>;
 

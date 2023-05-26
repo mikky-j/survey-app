@@ -41,7 +41,7 @@ const QuestionInput = ({
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       e.preventDefault();
-      console.log("hi");
+
       if (optionInputRef.current) {
         setQuestion({
           ...question,

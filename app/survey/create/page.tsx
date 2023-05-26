@@ -55,9 +55,7 @@ export const SurveyCreatePage = () => {
       }
     },
   });
-  useEffect(() => {
-    console.log(questions);
-  }, [questions]);
+  useEffect(() => {}, [questions]);
 
   if (!user) return <p>Loading</p>;
 

@@ -17,14 +17,12 @@ export async function POST(req: Request): Promise<Response> {
     },
   });
   if (!user) {
-    console.log("Couldn't find the user");
     return errorResponse("Email or password is incorrect");
   }
 
   try {
     const isValidPassword = await bcrypt.compare(data.password, user.password);
     if (!isValidPassword) {
-      console.log("Incorrect Password");
       return errorResponse("Email or password is incorrect");
     }
 

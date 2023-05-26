@@ -9,7 +9,6 @@ export const Appbar = () => {
     axios
       .get("/api/logout")
       .then((data) => {
-        console.log("Logout successfully");
         router.refresh();
       })
       .catch(console.error);
